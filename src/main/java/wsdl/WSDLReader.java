@@ -24,14 +24,16 @@ public class WSDLReader {
 
         if (authority != null) {
             final String[] userInfo = authority.split(":", 2);
+            int passDelim = userInfo[userInfo.length - 1].lastIndexOf('@');
 
             if (userInfo.length > 1) {
                 this.username = userInfo[0];
-                int passDelim = userInfo[1].lastIndexOf('@');
 
                 if (passDelim != -1) {
                     this.password = userInfo[1].substring(0, passDelim);
                 }
+            } else if (passDelim != -1) {
+                this.username = userInfo[0].substring(0, passDelim);
             }
         }
     }
@@ -48,17 +50,17 @@ public class WSDLReader {
 
     public Definitions read() {
         final WSDLParser parser = new WSDLParser();
+        final CustomHttpResolver chr = new CustomHttpResolver();
 
         if (this.username != null) {
             final String auth = username + ":" + password;
             byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("ISO-8859-1")));
             final Map<String, String> headers = new HashMap<>();
             headers.put(HttpHeaders.AUTHORIZATION, "Basic " + new String(encodedAuth));
-            final CustomHttpResolver chr = new CustomHttpResolver();
             chr.setHttpHeaders(headers);
-            parser.setResourceResolver(chr);
         }
 
+        parser.setResourceResolver(chr);
         return parser.parse(baseUri);
     }
 }
