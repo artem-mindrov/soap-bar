@@ -49,15 +49,15 @@ public class WSDLReader {
 
     public void read() {
         final WSDLParser parser = new WSDLParser();
-        final HashMap<Object, Object> cargs = new HashMap<>();
 
         if (this.username != null) {
             final String auth = username + ":" + password;
             byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("ISO-8859-1")));
             final Map<String, String> headers = new HashMap<>();
             headers.put(HttpHeaders.AUTHORIZATION, "Basic " + new String(encodedAuth));
-            cargs.put("httpHeaders", headers);
-            parser.setResourceResolver(new CustomHttpResolver(cargs));
+            final CustomHttpResolver chr = new CustomHttpResolver();
+            chr.setHttpHeaders(headers);
+            parser.setResourceResolver(chr);
         }
 
         final Definitions defs = parser.parse(baseUri);
