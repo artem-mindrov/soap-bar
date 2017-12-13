@@ -1,6 +1,5 @@
 package wsdl;
 
-import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
 import com.predic8.wsdl.WSDLParser;
 import org.apache.commons.codec.binary.Base64;
@@ -47,7 +46,7 @@ public class WSDLReader {
 
     public String password() { return password; }
 
-    public void read() {
+    public Definitions read() {
         final WSDLParser parser = new WSDLParser();
 
         if (this.username != null) {
@@ -60,15 +59,6 @@ public class WSDLReader {
             parser.setResourceResolver(chr);
         }
 
-        final Definitions defs = parser.parse(baseUri);
-        defs.getServices().forEach(s -> {
-            s.getPorts().forEach(p -> {
-                p.getBinding().getOperations().forEach(this::createSampleRequest);
-            });
-        });
-    }
-
-    void createSampleRequest(BindingOperation op) {
-        // TODO: implement
+        return parser.parse(baseUri);
     }
 }

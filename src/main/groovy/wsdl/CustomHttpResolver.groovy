@@ -62,7 +62,7 @@ class CustomHttpResolver extends ResourceResolver {
 
             HttpResponse response = client.execute(method)
 
-            if(response.statusLine.statusCode != HttpStatus.SC_OK) {
+            if (response.statusLine.statusCode != HttpStatus.SC_OK) {
                 throw new RuntimeException(String.format("GET %s returned status code %d",
                         uri, response.statusLine.statusCode))
             }
